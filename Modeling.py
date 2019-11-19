@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ## Modeling
-
-# In[1]:
-
 
 import numpy as np
 import pandas as pd
@@ -16,8 +12,8 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
 get_ipython().run_line_magic('matplotlib', 'inline')
 
-
-# In[2]:
+RF = 1
+GB = 2
 
 
 def sampling_data(data):
@@ -32,7 +28,7 @@ def sampling_data(data):
     return train, test
 
 
-# In[3]:
+
 
 
 def split_data(train, test, target):
@@ -47,34 +43,38 @@ def split_data(train, test, target):
     return x_train, y_train, x_test, y_test
 
 
-# In[4]:
 
+# create random forest
 
-# creates and fits a random forest
-
-def create_random_forest(x_train, y_train, x_test, est, sel):
+def create_random_forest(x_train, y_train, x_test, est):
     rf = RandomForestRegressor(n_estimators=est, oob_score = True)
-    
     rf.fit(x_train, y_train)
-    
     rf_feature_importance = rf.feature_importances_
-    rf_pred = rf.predict_proba(x_test)
     
-    if sel == 1:
-        return rf_feature_importance
-    elif sel == 2:
-        return rf_pred
-    else:
-        return print("Whoops")
+    return rf_feature_importance
 
+# creat random forest
 
-# In[1]:
+def create_gradient_boost(x_train, y_train, x_test, est):
+    gbc = GradientBoostingClassifier(n_estimators = est)
+    gbc.fit(x_train, y_train)
+    gbc_feature_importance = gbc.feature_importances_
+    
+    return gbc_feature_importance
+    
 
+def run_model(x_train, y_train, x_test, est, sel):
+    if sel == RF:
+        return create_random_forest(x_train, y_train, x_test, est)
+    elif sel == GB:
+        return create_gradient_boost(x_train, y_train, x_test, est)
+        
+    
 
 # graphing feature importance
 
-def graph_feature_importance(x_train, y_train, x_test, est):
-    feature_mi = create_random_forest(x_train, y_train, x_test, est, 1)
+def graph_feature_importance(x_train, y_train, x_test, est, model):
+    feature_mi = run_model(x_train, y_train, x_test, est, name)
     feature_mi_dict = dict(zip(x_train.columns.values, feature_mi))
     feat_importances = pd.Series(feature_mi, index=x_train.columns)
     plt.figure(figsize=(10, 10))
@@ -85,7 +85,7 @@ def graph_feature_importance(x_train, y_train, x_test, est):
     plt.show()
 
 
-# In[2]:
+
 
 
 # testing different esitmators
@@ -100,10 +100,4 @@ for n in estimators:
     proba = create_random_forest(train_df, test_df,'MD_EARN_WNE_P6' , n, 4)
     auc_oob.append(roc_auc_score(train_df['MD_EARN_WNE_P6'], oob[:,1]))
     auc_test.append(roc_auc_score(test_df['MD_EARN_WNE_P6'], proba[:,1]))
-
-
-# In[ ]:
-
-
-
 
