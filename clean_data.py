@@ -10,8 +10,6 @@ import numpy as np
 
 # The below lists represent columns to drop based on the description of the fields in CollegeScorecardDictionary.xlsx
 
-# In[28]:
-
 
 academics_to_drop = [
 'CIP01CERT1',
@@ -225,18 +223,11 @@ academics_to_drop = [
 ]
 
 
-# In[29]:
-
 
 aid_to_drop = [
-#'PCTPELL',
-#'PCTFLOAN',
 'DEBT_MDN',
 'GRAD_DEBT_MDN',
 'WDRAW_DEBT_MDN',
-#'LO_INC_DEBT_MDN',
-#'MD_INC_DEBT_MDN',
-#'HI_INC_DEBT_MDN',
 'DEP_DEBT_MDN',
 'IND_DEBT_MDN',
 'PELL_DEBT_MDN',
@@ -270,10 +261,6 @@ aid_to_drop = [
 'GRAD_DEBT_MDN_SUPP',
 'GRAD_DEBT_MDN10YR_SUPP',
 ]
-
-
-# In[30]:
-
 
 completion_to_drop = [
 'C150_4',
@@ -1304,8 +1291,6 @@ completion_to_drop = [
 'NOT1STGEN_YR8_N',
 'SEPAR_DT_MDN',
 'SEPAR_DT_N',
-#'C150_L4_POOLED_SUPP', keep this
-#'C150_4_POOLED_SUPP', keep this
 'C200_L4_POOLED_SUPP',
 'C200_4_POOLED_SUPP',
 'C100_4',
@@ -1497,11 +1482,7 @@ completion_to_drop = [
 ]
 
 
-# In[31]:
-
-
 admissions_to_drop = [
-#'ADM_RATE',
 'ADM_RATE_ALL',
 'SATVR25',
 'SATVR75',
@@ -1524,51 +1505,13 @@ admissions_to_drop = [
 'ACTENMID',
 'ACTMTMID',
 'ACTWRMID',
-#'SAT_AVG',
 'SAT_AVG_ALL',
 ]
 
 
-# In[32]:
-
-
 cost_to_drop = [
-#'NPT4_PUB',
-#'NPT4_PRIV',
 'NPT4_PROG',
 'NPT4_OTHER',
-#'NPT41_PUB',
-#'NPT42_PUB',
-#'NPT43_PUB',
-#'NPT44_PUB',
-#'NPT45_PUB',
-#'NPT41_PRIV',
-#'NPT42_PRIV',
-#'NPT43_PRIV',
-#'NPT44_PRIV',
-#'NPT45_PRIV',
-#'NPT41_PROG',
-#'NPT42_PROG',
-#'NPT43_PROG',
-#'NPT44_PROG',
-#'NPT45_PROG',
-#'NPT41_OTHER',
-#'NPT42_OTHER',
-#'NPT43_OTHER',
-#'NPT44_OTHER',
-#'NPT45_OTHER',
-#'NPT4_048_PUB',
-#'NPT4_048_PRIV',
-#'NPT4_048_PROG',
-#'NPT4_048_OTHER',
-#'NPT4_3075_PUB',
-#'NPT4_3075_PRIV',
-#'NPT4_75UP_PUB',
-#'NPT4_75UP_PRIV',
-#'NPT4_3075_PROG',
-#'NPT4_3075_OTHER',
-#'NPT4_75UP_PROG',
-#'NPT4_75UP_OTHER',
 'NUM4_PUB',
 'NUM4_PRIV',
 'NUM4_PROG',
@@ -1593,11 +1536,6 @@ cost_to_drop = [
 'NUM43_OTHER',
 'NUM44_OTHER',
 'NUM45_OTHER',
-#'COSTT4_A',
-#'COSTT4_P',
-#'TUITIONFEE_IN',
-#'TUITIONFEE_OUT',
-#'TUITIONFEE_PROG',
 'CIPTFBS1',
 'CIPTFBS2',
 'CIPTFBS3',
@@ -1611,10 +1549,6 @@ cost_to_drop = [
 'CIPTFBSANNUAL5',
 'CIPTFBSANNUAL6'
 ]
-
-
-# In[33]:
-
 
 earnings_to_drop = [
 'COUNT_ED',
@@ -1693,9 +1627,6 @@ earnings_to_drop = [
 'SD_EARN_WNE_P9',
 'GT_25K_P9',
 ]
-
-
-# In[34]:
 
 
 repayment_to_drop = [
@@ -1833,10 +1764,6 @@ repayment_to_drop = [
 'CDR3_DENOM'
 ]
 
-
-# In[35]:
-
-
 root_to_drop = [
 'OPEID',
 'OPEID6',
@@ -1845,84 +1772,28 @@ root_to_drop = [
 ]
 
 
-# In[36]:
-
 
 school_to_drop = [
-#'#INSTNM',
 'CITY',
-#'#STABBR',
 'ZIP',
 'ACCREDAGENCY',
 'INSTURL',
 'NPCURL',
-#'#SCH_DEG',
 'HCM2',
 'MAIN',
 'NUMBRANCH',
-#'#PREDDEG',
-#'#HIGHDEG',
-#'#CONTROL',
 'ST_FIPS',
 'REGION',
 'LOCALE',
-#'#LOCALE2',
-#'#CCBASIC',
-#'#CCUGPROF',
-#'#CCSIZSET',
-#'#HBCU',
-#'#PBI',
-#'#ANNHI',
-#'#TRIBAL',
-#'#AANAPII',
-#'#HSI',
-#'#NANTI',
-#'#MENONLY',
-#'#WOMENONLY',
-#'#RELAFFIL',
-#'#DISTANCEONLY',
-#'#CURROPER',
-#'#TUITFTE',
-#'#INEXPFTE',
-#'#AVGFACSAL',
-#'#PFTFAC',
 'ALIAS',
-#'#ICLEVEL',
-#'#OPENADMP',
 'ACCREDCODE',
 'T4APPROVALDATE',
-#'#SCHTYPE',
-#'#OPEFLAG',
 ]
 
 
-# In[37]:
 
 
 student_to_drop = [
-#'UGDS',
-#'UG',
-#'UGDS_WHITE',
-#'UGDS_BLACK',
-#'UGDS_HISP',
-#'UGDS_ASIAN',
-#'UGDS_AIAN',
-#'UGDS_NHPI',
-#'UGDS_2MOR',
-#'UGDS_NRA',
-#'UGDS_UNKN',
-#'UGDS_WHITENH',
-#'UGDS_BLACKNH',
-#'UGDS_API',
-#'UGDS_AIANOLD',
-#'UGDS_HISPOLD',
-#'UG_NRA',
-#'UG_UNKN',
-#'UG_WHITENH',
-#'UG_BLACKNH',
-#'UG_API',
-#'UG_AIANOLD',
-#'UG_HISPOLD',
 'PPTUG_EF',
 'PPTUG_EF2',
 'PFTFTUG1_EF',
@@ -1930,51 +1801,17 @@ student_to_drop = [
 'RET_FTL4',
 'RET_PT4',
 'RET_PTL4',
-#'UG25ABV',
-#'INC_PCT_LO',
-#'DEP_STAT_PCT_IND',
-#'IND_INC_PCT_LO',
-#'DEP_INC_PCT_LO',
-#'PAR_ED_PCT_1STGEN',
-#'INC_PCT_M1',
-#'INC_PCT_M2',
-#'INC_PCT_H1',
-#'INC_PCT_H2',
-#'DEP_INC_PCT_M1',
-#'DEP_INC_PCT_M2',
-#'DEP_INC_PCT_H1',
-#'DEP_INC_PCT_H2',
-#'IND_INC_PCT_M1',
-#'IND_INC_PCT_M2',
-#'IND_INC_PCT_H1',
-#'IND_INC_PCT_H2',
-#'PAR_ED_PCT_MS',
-#'PAR_ED_PCT_HS',
-#'PAR_ED_PCT_PS',
 'APPL_SCH_PCT_GE2',
 'APPL_SCH_PCT_GE3',
 'APPL_SCH_PCT_GE4',
 'APPL_SCH_PCT_GE5',
-#'DEP_INC_AVG',
-#'IND_INC_AVG',
 'INC_N',
 'DEP_INC_N',
 'IND_INC_N',
 'DEP_STAT_N',
 'PAR_ED_N',
 'APPL_SCH_N',
-#'PELL_EVER',
-#'AGE_ENTRY',
-#'AGE_ENTRY_SQ',
-#'AGEGE24',
-#'FEMALE',
 'MARRIED',
-#'DEPENDENT',
-#'VETERAN',
-#'FIRST_GEN',
-#'FAMINC',
-#'MD_FAMINC',
-#'FAMINC_IND',
 'LNFAMINC',
 'LNFAMINC_IND',
 'PCT_WHITE',
@@ -1984,7 +1821,6 @@ student_to_drop = [
 'PCT_BA',
 'PCT_GRAD_PROF',
 'PCT_BORN_US',
-#'MEDIAN_HH_INC',
 'POVERTY_RATE',
 'UNEMP_RATE',
 'LN_MEDIAN_HH_INC',
@@ -1994,11 +1830,6 @@ student_to_drop = [
 'FSEND_3',
 'FSEND_4',
 'FSEND_5',
-#'UGDS_MEN',
-#'UGDS_WOMEN',
-#'D_PCTPELL_PCTFLOAN',
-#'UGNONDS',
-#'GRADS',
 'RET_FT4_POOLED',
 'RET_FTL4_POOLED',
 'RET_PT4_POOLED',
@@ -2016,8 +1847,6 @@ student_to_drop = [
 ]
 
 
-# In[45]:
-
 
 def getDataFramesFromFiles(path='../CollegeScorecard_Raw_Data/'):
     """Creates array of dataframes indexed on year of CollegeScorecard Data
@@ -2032,11 +1861,9 @@ def getDataFramesFromFiles(path='../CollegeScorecard_Raw_Data/'):
 
     for year in range(START_YEAR, END_YEAR):
         year_YY = year % 100
-        dfs[year] = pd.read_csv(path + 'MERGED' +                                 str(year) + '_{:02d}_PP.CSV'.format((year_YY + 1) % 100), delimiter=',')
+        dfs[year] = pd.read_csv(path + 'MERGED' + str(year) + '_{:02d}_PP.CSV'.format((year_YY + 1) % 100), delimiter=',')
     return dfs
 
-
-# In[46]:
 
 
 def addYearAsLabel(dfs):
@@ -2045,38 +1872,21 @@ def addYearAsLabel(dfs):
         df['Year'] = year
 
 
-# In[47]:
-
-
 def dropUselessColumn(dfs):
     for year in dfs:
         df = dfs[year]
-        
-        columns_to_drop =   academics_to_drop +                             aid_to_drop +                             completion_to_drop +                             cost_to_drop +                             earnings_to_drop +                             repayment_to_drop +                             root_to_drop +                             school_to_drop +                             student_to_drop
+        columns_to_drop = academics_to_drop + aid_to_drop + completion_to_drop + cost_to_drop + earnings_to_drop + repayment_to_drop + root_to_drop + school_to_drop + student_to_drop
         df.drop(set(columns_to_drop).intersection(set(df.columns)), axis=1, inplace=True)
-
-
-# In[48]:
-
 
 def convertUnknownsToNans(dfs):
     for year in dfs:
         df = dfs[year]
         df.replace(to_replace='PrivacySuppressed', value=np.nan, inplace=True)
 
-
-# In[49]:
-
-
 def dropColsAllNans(dfs):
     for year in dfs:
         df = dfs[year]
         df.dropna(axis=1, how='all', inplace=True)
-        
-
-
-# In[50]:
-
 
 def convertMixedDataTypes(merged_df):
     for col in merged_df.select_dtypes(include=['object']):
@@ -2088,19 +1898,12 @@ def convertMixedDataTypes(merged_df):
 
 # Because we have varying numbers of rows, we want to get the intersection of all the rows that exist in every year
 
-# In[57]:
-
-
 def intersection_and_merge(dfs):
-    #intersection. It works!!!
     init_key = list(dfs.keys())[0]
     init = dfs[init_key]['UNITID']
     intersect_schools = set(init)
     for df in dfs:
         intersect_schools = intersect_schools.intersection(dfs[df]['UNITID'])
-        
-    #uncomment this to check:
-    #return intersect_schools
         
     # now for getting a new dataframe dictionary containing, for each dataframe, the subset that includes only
     # the rows in intersect_schools
@@ -2113,16 +1916,10 @@ def intersection_and_merge(dfs):
         new_dat = dfs[df].iloc[indices_keep]
         new_dfs[df] = new_dat
         
-    #uncomment this to check:    
-    #return new_dfs
-        
-    #We will now merge all the dataframes in new_dfs
     merged_frame = pd.DataFrame([])
     for df in new_dfs:
         merged_frame = merged_frame.append(new_dfs[df])
     
     merged_frame = merged_frame.reset_index(drop=True)
-    #comment this to check others
     
     return merged_frame
-
