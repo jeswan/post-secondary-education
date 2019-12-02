@@ -1875,7 +1875,7 @@ def addYearAsLabel(dfs):
 def dropUselessColumn(dfs):
     for year in dfs:
         df = dfs[year]
-        columns_to_drop = academics_to_drop + aid_to_drop + completion_to_drop + cost_to_drop + earnings_to_drop + repayment_to_drop + root_to_drop + school_to_drop + student_to_drop
+        columns_to_drop = academics_to_drop + admissions_to_drop + aid_to_drop + completion_to_drop + cost_to_drop + earnings_to_drop + repayment_to_drop + root_to_drop + school_to_drop + student_to_drop
         df.drop(set(columns_to_drop).intersection(set(df.columns)), axis=1, inplace=True)
 
 def convertUnknownsToNans(dfs):
