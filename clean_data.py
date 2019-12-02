@@ -1923,3 +1923,23 @@ def intersection_and_merge(dfs):
     merged_frame = merged_frame.reset_index(drop=True)
     
     return merged_frame
+
+def oneHotEncoding(dfs):
+    columns_one_hot = ['INSTNM', 'STABBR']
+    for year in dfs:
+        df = dfs[year]
+        for c in columns_one_hot:
+            df = pd.concat([df, pd.get_dummies(df[c], prefix=c)],axis=1)
+            dfs[year].drop([c],axis=1, inplace=True)
+            
+def runAll():
+    dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
+    addYearAsLabel(dfs)
+    dropUselessColumn(dfs)
+    convertUnknownsToNans(dfs)
+    dropColsAllNans(dfs)
+    oneHotEncoding(dfs)
+    merged_df = intersection_and_merge(dfs)
+    merged_df = convertMixedDataTypes(merged_df)
+    merged_df = merged_df.fillna(merged_df.mean())
+    return merged_df
