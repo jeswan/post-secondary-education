@@ -1505,37 +1505,17 @@ admissions_to_drop = [
 'ACTENMID',
 'ACTMTMID',
 'ACTWRMID',
-'SAT_AVG_ALL'
+'SAT_AVG_ALL',
 ]
 
 
 cost_to_drop = [
-# 'NPT4_PROG',
-# 'NPT4_OTHER',
-# 'NUM4_PUB',
-# 'NUM4_PRIV',
-# 'NUM4_PROG',
-# 'NUM4_OTHER',
-'NPT41_PUB', #remove since contains nans and already covered by other info
-'NPT42_PUB', #remove since contains nans and already covered by other info
-'NPT43_PUB', #remove since contains nans and already covered by other info
-'NPT44_PUB', #remove since contains nans and already covered by other info
-#'NPT45_PUB', #keep since 110k info not in other columns
-'NPT41_PRIV', #remove since contains nans and already covered by other info
-'NPT42_PRIV', #remove since contains nans and already covered by other info
-'NPT43_PRIV', #remove since contains nans and already covered by other info
-'NPT44_PRIV', #remove since contains nans and already covered by other info
-#'NPT45_PRIV', #keep since 110k info not in other columns
-'NPT41_PROG', #remove since contains nans and already covered by other info
-'NPT42_PROG', #remove since contains nans and already covered by other info
-'NPT43_PROG', #remove since contains nans and already covered by other info
-'NPT44_PROG', #remove since contains nans and already covered by other info
-#'NPT45_PROG', #keep since 110k info not in other columns
-'NPT41_OTHER', #remove since contains nans and already covered by other info
-'NPT42_OTHER', #remove since contains nans and already covered by other info
-'NPT43_OTHER', #remove since contains nans and already covered by other info
-'NPT44_OTHER', #remove since contains nans and already covered by other info
-#'NPT45_OTHER', #keep since 110k info not in other columns
+'NPT4_PROG',
+'NPT4_OTHER',
+'NUM4_PUB',
+'NUM4_PRIV',
+'NUM4_PROG',
+'NUM4_OTHER',
 'NUM41_PUB',
 'NUM42_PUB',
 'NUM43_PUB',
@@ -1798,7 +1778,6 @@ school_to_drop = [
 'ZIP',
 'ACCREDAGENCY',
 'INSTURL',
-'INSTNM',
 'NPCURL',
 'HCM2',
 'MAIN',
@@ -1896,7 +1875,7 @@ def addYearAsLabel(dfs):
 def dropUselessColumn(dfs):
     for year in dfs:
         df = dfs[year]
-        columns_to_drop = academics_to_drop + admissions_to_drop + aid_to_drop + completion_to_drop + cost_to_drop + earnings_to_drop + repayment_to_drop + root_to_drop + school_to_drop + student_to_drop
+        columns_to_drop = academics_to_drop + aid_to_drop + completion_to_drop + cost_to_drop + earnings_to_drop + repayment_to_drop + root_to_drop + school_to_drop + student_to_drop
         df.drop(set(columns_to_drop).intersection(set(df.columns)), axis=1, inplace=True)
 
 def convertUnknownsToNans(dfs):
@@ -1915,28 +1894,6 @@ def convertMixedDataTypes(merged_df):
             merged_df[col] = pd.to_numeric(merged_df[col], errors='coerce')
         elif col == 'STABBR':
             merged_df[col] = merged_df[col].astype(str)
-    return merged_df
-
-
-def combine_avg_net_price(merged_df):
-    brackets = ['NPT41_',
-                'NPT42_', 
-                'NPT43_', 
-                'NPT44_', 
-                'NPT45_',
-                'NPT4_048_', 
-                'NPT4_3075_', 
-                'NPT4_75UP_']
-
-    inst = ['PUB', 'PRIV', 'OTHER']
-    
-    for brack in brackets:
-        merged_df[brack] = merged_df[brack +inst[0]].fillna(0) \
-            + merged_df[brack+inst[1]].fillna(0) + merged_df[brack+inst[2]].fillna(0)
-        merged_df = merged_df.drop(brack+inst[0], axis=1)
-        merged_df = merged_df.drop(brack+inst[1], axis=1)
-        merged_df = merged_df.drop(brack+inst[2], axis=1)
-    
     return merged_df
 
 # Because we have varying numbers of rows, we want to get the intersection of all the rows that exist in every year
@@ -1966,127 +1923,3 @@ def intersection_and_merge(dfs):
     merged_frame = merged_frame.reset_index(drop=True)
     
     return merged_frame
-
-    
-    
-def oneHotEncoding(dfs):
-    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'SCHTYPE']
-    for year in dfs:
-        df = dfs[year]
-        for c in columns_one_hot:
-            df = pd.concat([df, pd.get_dummies(df[c], prefix=c)],axis=1)
-            dfs[year].drop([c],axis=1, inplace=True)
-            
-def runAll():
-    dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
-    addYearAsLabel(dfs)
-    dropUselessColumn(dfs)
-    convertUnknownsToNans(dfs)
-    dropColsAllNans(dfs)
-    oneHotEncoding(dfs)
-    merged_df = intersection_and_merge(dfs)
-    merged_df = convertMixedDataTypes(merged_df)
-    merged_df = combine_avg_net_price(merged_df)
-    merged_df = merged_df.fillna(merged_df.mean())
-    return merged_df
-    
-    
-    
-    
-    
-    
-def bin_degree(df):
-
-    DEG_SCIMATH = ['PCIP26', 
-                 'PCIP27', 
-                 'PCIP40', 
-                 'PCIP42']
-
-    DEG_TENG = ['PCIP04', 
-                'PCIP10', 
-                'PCIP11', 
-                'PCIP14', 
-                'PCIP15', 
-                'PCIP41']
-
-    DEG_ART = ['PCIP50']
-
-
-    DEG_PROF = ['PCIP01', 
-                'PCIP03', 
-                'PCIP12', 
-                'PCIP19', 
-                'PCIP25', 
-                'PCIP31', 
-                'PCIP34', 
-                'PCIP35', 
-                'PCIP36', 
-                'PCIP37', 
-                'PCIP43', 
-                'PCIP44', 
-                'PCIP46', 
-                'PCIP47',
-                'PCIP48',
-                'PCIP49']
-
-    DEG_HUM = ['PCIP05',
-             'PCIP09',
-             'PCIP13',
-             'PCIP16',
-             'PCIP23',
-             'PCIP24',
-             'PCIP30',
-             'PCIP32',
-             'PCIP33',
-             'PCIP38',
-             'PCIP39',
-             'PCIP45',
-             'PCIP54']
-
-    DEG_LAW = ['PCIP22']
-
-    DEG_MED = ['PCIP51']
-
-    DEG_MIL = ['PCIP28',
-                'PCIP29']
-
-    DEG_BUS = ['PCIP52']
-    
-    list_of_buckets = ['DEG_SCIMATH', 
-                   'DEG_TENG', 
-                   'DEG_ART', 
-                   'DEG_PROF', 
-                   'DEG_HUM', 
-                   'DEG_LAW', 
-                   'DEG_MED', 
-                   'DEG_MIL',
-                   'DEG_BUS']
-    
-    
-    df_pcip = df.filter(like = 'PCIP', axis = 1)
-    ls_of_col = df_pcip.columns.tolist()
-    d = pd.DataFrame(0, index=np.arange(len(df_pcip)), columns=list_of_buckets)
-    
-    for i in ls_of_col:
-        if i in DEG_SCIMATH:
-            d["DEG_SCIMATH"] += df_pcip[i]
-        elif i in DEG_TENG:
-            d["DEG_TENG"] += df_pcip[i]
-        elif i in DEG_ART:
-            d["DEG_ART"] += df_pcip[i]
-        elif i in DEG_PROF:
-            d["DEG_PROF"] += df_pcip[i]
-        elif i in DEG_HUM:
-            d["DEG_HUM"] += df_pcip[i]
-        elif i in DEG_LAW:
-            d["DEG_LAW"] += df_pcip[i]
-        elif i in DEG_MED:
-            d["DEG_MED"] += df_pcip[i]
-        elif i in DEG_MIL:
-            d["DEG_MIL"] += df_pcip[i]
-        else:
-            d["DEG_BUS"] += df_pcip[i]
-        
-    output = pd.concat([merged_df.drop(ls_of_col, axis = 1), d], axis = 1)
-    
-    return output
