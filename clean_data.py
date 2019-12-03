@@ -1925,10 +1925,7 @@ def convertMixedDataTypes(merged_df):
 # no harm done in reporting the average net price as one feature. 
 # The exception here is PROG, which does not have it's own flag, unlike private public and OTHER
 def combine_avg_net_price(merged_df):
-    brackets = ['NPT41_',
-                'NPT42_', 
-                'NPT43_', 
-                'NPT44_', 
+    brackets = [ 
                 'NPT45_',
                 'NPT4_048_', 
                 'NPT4_3075_', 
@@ -1976,7 +1973,7 @@ def intersection_and_merge(dfs):
     
     
 def oneHotEncoding(dfs):
-    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'SCHTYPE']
+    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL']
     for year in dfs:
         df = dfs[year]
         for c in columns_one_hot:
@@ -1993,6 +1990,7 @@ def runAll():
     merged_df = intersection_and_merge(dfs)
     merged_df = convertMixedDataTypes(merged_df)
     merged_df = combine_avg_net_price(merged_df)
+    merged_df = bin_degree(merged_df)
     merged_df = merged_df.fillna(merged_df.mean())
     return merged_df
     
@@ -2093,6 +2091,6 @@ def bin_degree(df):
         else:
             d["DEG_BUS"] += df_pcip[i]
         
-    output = pd.concat([merged_df.drop(ls_of_col, axis = 1), d], axis = 1)
+    output = pd.concat([df.drop(ls_of_col, axis = 1), d], axis = 1)
     
     return output
