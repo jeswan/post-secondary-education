@@ -1510,12 +1510,32 @@ admissions_to_drop = [
 
 
 cost_to_drop = [
-'NPT4_PROG',
-'NPT4_OTHER',
-'NUM4_PUB',
-'NUM4_PRIV',
-'NUM4_PROG',
-'NUM4_OTHER',
+# 'NPT4_PROG',
+# 'NPT4_OTHER',
+# 'NUM4_PUB',
+# 'NUM4_PRIV',
+# 'NUM4_PROG',
+# 'NUM4_OTHER',
+'NPT41_PUB', #remove since contains nans and already covered by other info
+'NPT42_PUB', #remove since contains nans and already covered by other info
+'NPT43_PUB', #remove since contains nans and already covered by other info
+'NPT44_PUB', #remove since contains nans and already covered by other info
+#'NPT45_PUB', #keep since 110k info not in other columns
+'NPT41_PRIV', #remove since contains nans and already covered by other info
+'NPT42_PRIV', #remove since contains nans and already covered by other info
+'NPT43_PRIV', #remove since contains nans and already covered by other info
+'NPT44_PRIV', #remove since contains nans and already covered by other info
+#'NPT45_PRIV', #keep since 110k info not in other columns
+'NPT41_PROG', #remove since contains nans and already covered by other info
+'NPT42_PROG', #remove since contains nans and already covered by other info
+'NPT43_PROG', #remove since contains nans and already covered by other info
+'NPT44_PROG', #remove since contains nans and already covered by other info
+#'NPT45_PROG', #keep since 110k info not in other columns
+'NPT41_OTHER', #remove since contains nans and already covered by other info
+'NPT42_OTHER', #remove since contains nans and already covered by other info
+'NPT43_OTHER', #remove since contains nans and already covered by other info
+'NPT44_OTHER', #remove since contains nans and already covered by other info
+#'NPT45_OTHER', #keep since 110k info not in other columns
 'NUM41_PUB',
 'NUM42_PUB',
 'NUM43_PUB',
@@ -1778,6 +1798,7 @@ school_to_drop = [
 'ZIP',
 'ACCREDAGENCY',
 'INSTURL',
+'INSTNM',
 'NPCURL',
 'HCM2',
 'MAIN',
@@ -1788,6 +1809,7 @@ school_to_drop = [
 'ALIAS',
 'ACCREDCODE',
 'T4APPROVALDATE',
+'SCHTYPE' #covered by CONTROL
 ]
 
 
@@ -1896,6 +1918,30 @@ def convertMixedDataTypes(merged_df):
             merged_df[col] = merged_df[col].astype(str)
     return merged_df
 
+
+# We have found that, across pub, priv, prog, and other, no rows have any pair of any of these fields populated
+# As a result, we can combine these columns without actually adding anything to the numbers recorded. 
+# We do this because we already know what kind of institution we are dealing with from other features, so there is
+# no harm done in reporting the average net price as one feature. 
+# The exception here is PROG, which does not have it's own flag, unlike private public and OTHER
+def combine_avg_net_price(merged_df):
+    brackets = [ 
+                'NPT45_',
+                'NPT4_048_', 
+                'NPT4_3075_', 
+                'NPT4_75UP_']
+
+    inst = ['PUB', 'PRIV', 'OTHER']
+    
+    for brack in brackets:
+        merged_df[brack] = merged_df[brack +inst[0]].fillna(0) \
+            + merged_df[brack+inst[1]].fillna(0) + merged_df[brack+inst[2]].fillna(0)
+        merged_df = merged_df.drop(brack+inst[0], axis=1)
+        merged_df = merged_df.drop(brack+inst[1], axis=1)
+        merged_df = merged_df.drop(brack+inst[2], axis=1)
+    
+    return merged_df
+
 # Because we have varying numbers of rows, we want to get the intersection of all the rows that exist in every year
 
 def intersection_and_merge(dfs):
@@ -1927,7 +1973,7 @@ def intersection_and_merge(dfs):
     
     
 def oneHotEncoding(dfs):
-    columns_one_hot = ['INSTNM', 'STABBR']
+    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL']
     for year in dfs:
         df = dfs[year]
         for c in columns_one_hot:
@@ -1943,6 +1989,8 @@ def runAll():
     oneHotEncoding(dfs)
     merged_df = intersection_and_merge(dfs)
     merged_df = convertMixedDataTypes(merged_df)
+    merged_df = combine_avg_net_price(merged_df)
+    merged_df = bin_degree(merged_df)
     merged_df = merged_df.fillna(merged_df.mean())
     return merged_df
     
@@ -2043,6 +2091,6 @@ def bin_degree(df):
         else:
             d["DEG_BUS"] += df_pcip[i]
         
-    output = pd.concat([merged_df.drop(ls_of_col, axis = 1), d], axis = 1)
+    output = pd.concat([df.drop(ls_of_col, axis = 1), d], axis = 1)
     
     return output
