@@ -1892,7 +1892,8 @@ dont_avg = [
     'HIGHDEG',
     'DISTANCEONLY',
     'RELAFIL',
-    'CURROPER'
+    'CURROPER',
+    'STABBR'
 ]
 
 
@@ -2000,8 +2001,8 @@ def oneHotEncoding(merged_df):
     columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'HIGHDEG', 'ICLEVEL', 'OPENADMP', 'OPEFLAG', 'SCH_DEG']
     for c in columns_one_hot:
         merged_df = pd.concat([merged_df, pd.get_dummies(merged_df[c], prefix=c)],axis=1)
-        return merged_df.drop([c],axis=1, inplace=True)
-            
+        merged_df = merged_df.drop([c],axis=1)
+    return merged_df
     
 def bin_degree(df):
 
@@ -2107,10 +2108,14 @@ def fill_col(df):
             df[col].fillna(0, inplace = True)
 
     return df
-       
-    
- 
-    
+
+def dropYears(merged_df):
+    merged_df = set(merged_df['Year'])
+    years_to_remove = [1996, 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006, 2008, 2010, 2015, 2016, 2017]
+    for year in years_to_remove:
+        merged_df.remove(year)
+    print(merged_df['Year'].unique())
+    return merged_df
     
 def runAll():
     dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
@@ -2124,7 +2129,8 @@ def runAll():
     merged_df = bin_degree(merged_df)
     merged_df = fill_col(merged_df)
     merged_df = oneHotEncoding(merged_df)
-    
+    merged_df = dropYears(merged_df)
+
     return merged_df
     
     
