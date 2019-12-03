@@ -1970,15 +1970,11 @@ def intersection_and_merge(dfs):
     
     return merged_frame
 
-    
-    
-def oneHotEncoding(dfs):
-    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL']
-    for year in dfs:
-        df = dfs[year]
-        for c in columns_one_hot:
-            df = pd.concat([df, pd.get_dummies(df[c], prefix=c)],axis=1)
-            dfs[year].drop([c],axis=1, inplace=True)
+def oneHotEncoding(merged_df):
+    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'HIGHDEG', 'ICLEVEL', 'OPENADMP', 'OPEFLAG', 'SCH_DEG']
+    for c in columns_one_hot:
+        merged_df = pd.concat([merged_df, pd.get_dummies(merged_df[c], prefix=c)],axis=1)
+        return merged_df.drop([c],axis=1, inplace=True)
             
 def runAll():
     dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
