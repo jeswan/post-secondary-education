@@ -1809,6 +1809,7 @@ school_to_drop = [
 'ALIAS',
 'ACCREDCODE',
 'T4APPROVALDATE',
+'SCHTYPE' #covered by CONTROL
 ]
 
 
