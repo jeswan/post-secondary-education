@@ -1897,6 +1897,11 @@ def convertMixedDataTypes(merged_df):
     return merged_df
 
 
+# We have found that, across pub, priv, prog, and other, no rows have any pair of any of these fields populated
+# As a result, we can combine these columns without actually adding anything to the numbers recorded. 
+# We do this because we already know what kind of institution we are dealing with from other features, so there is
+# no harm done in reporting the average net price as one feature. 
+# The exception here is PROG, which does not have it's own flag, unlike private public and OTHER
 def combine_avg_net_price(merged_df):
     brackets = ['NPT41_',
                 'NPT42_', 
