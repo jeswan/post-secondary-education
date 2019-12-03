@@ -2114,7 +2114,6 @@ def dropYears(merged_df):
     years_to_remove = [1996, 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006, 2008, 2010, 2015, 2016, 2017]
     for year in years_to_remove:
         merged_df.remove(year)
-    print(merged_df['Year'].unique())
     return merged_df
     
 def runAll():
