@@ -1875,7 +1875,7 @@ def addYearAsLabel(dfs):
 def dropUselessColumn(dfs):
     for year in dfs:
         df = dfs[year]
-        columns_to_drop = academics_to_drop + aid_to_drop + completion_to_drop + cost_to_drop + earnings_to_drop + repayment_to_drop + root_to_drop + school_to_drop + student_to_drop
+        columns_to_drop = academics_to_drop + admissions_to_drop + aid_to_drop + completion_to_drop + cost_to_drop + earnings_to_drop + repayment_to_drop + root_to_drop + school_to_drop + student_to_drop
         df.drop(set(columns_to_drop).intersection(set(df.columns)), axis=1, inplace=True)
 
 def convertUnknownsToNans(dfs):
@@ -1924,7 +1924,33 @@ def intersection_and_merge(dfs):
     
     return merged_frame
 
-
+    
+    
+def oneHotEncoding(dfs):
+    columns_one_hot = ['INSTNM', 'STABBR']
+    for year in dfs:
+        df = dfs[year]
+        for c in columns_one_hot:
+            df = pd.concat([df, pd.get_dummies(df[c], prefix=c)],axis=1)
+            dfs[year].drop([c],axis=1, inplace=True)
+            
+def runAll():
+    dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
+    addYearAsLabel(dfs)
+    dropUselessColumn(dfs)
+    convertUnknownsToNans(dfs)
+    dropColsAllNans(dfs)
+    oneHotEncoding(dfs)
+    merged_df = intersection_and_merge(dfs)
+    merged_df = convertMixedDataTypes(merged_df)
+    merged_df = merged_df.fillna(merged_df.mean())
+    return merged_df
+    
+    
+    
+    
+    
+    
 def bin_degree(df):
 
     DEG_SCIMATH = ['PCIP26', 
