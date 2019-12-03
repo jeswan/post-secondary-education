@@ -9,6 +9,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
 
+import shap
+
 RF = 1
 GB = 2
 
@@ -125,6 +127,18 @@ def graph_feature_importance(feature_mi, x_train):
     feat_importances[::-1][:20].plot(kind="bar")
     plt.show()
     
+    
+    
+'''
+Input: takes fitted tree model and dataset that it was trained on
+
+Output: Shap summary of the features that most affect the SHAP value, that is, 
+the impact on model output.
+'''
+def shap_summary_plot_for_Trees(fitted_tree, x_train):
+    explainer = shap.TreeExplainer(fitted_tree)
+    shap_values = explainer.shap_values(x_train, approximate=True)
+    shap.summary_plot(shap_values, x_train)
     
     
     
