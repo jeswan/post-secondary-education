@@ -1510,12 +1510,32 @@ admissions_to_drop = [
 
 
 cost_to_drop = [
-'NPT4_PROG',
-'NPT4_OTHER',
-'NUM4_PUB',
-'NUM4_PRIV',
-'NUM4_PROG',
-'NUM4_OTHER',
+# 'NPT4_PROG',
+# 'NPT4_OTHER',
+# 'NUM4_PUB',
+# 'NUM4_PRIV',
+# 'NUM4_PROG',
+# 'NUM4_OTHER',
+'NPT41_PUB', #remove since contains nans and already covered by other info
+'NPT42_PUB', #remove since contains nans and already covered by other info
+'NPT43_PUB', #remove since contains nans and already covered by other info
+'NPT44_PUB', #remove since contains nans and already covered by other info
+#'NPT45_PUB', #keep since 110k info not in other columns
+'NPT41_PRIV', #remove since contains nans and already covered by other info
+'NPT42_PRIV', #remove since contains nans and already covered by other info
+'NPT43_PRIV', #remove since contains nans and already covered by other info
+'NPT44_PRIV', #remove since contains nans and already covered by other info
+#'NPT45_PRIV', #keep since 110k info not in other columns
+'NPT41_PROG', #remove since contains nans and already covered by other info
+'NPT42_PROG', #remove since contains nans and already covered by other info
+'NPT43_PROG', #remove since contains nans and already covered by other info
+'NPT44_PROG', #remove since contains nans and already covered by other info
+#'NPT45_PROG', #keep since 110k info not in other columns
+'NPT41_OTHER', #remove since contains nans and already covered by other info
+'NPT42_OTHER', #remove since contains nans and already covered by other info
+'NPT43_OTHER', #remove since contains nans and already covered by other info
+'NPT44_OTHER', #remove since contains nans and already covered by other info
+#'NPT45_OTHER', #keep since 110k info not in other columns
 'NUM41_PUB',
 'NUM42_PUB',
 'NUM43_PUB',
@@ -1778,6 +1798,7 @@ school_to_drop = [
 'ZIP',
 'ACCREDAGENCY',
 'INSTURL',
+'INSTNM',
 'NPCURL',
 'HCM2',
 'MAIN',
@@ -1925,7 +1946,7 @@ def intersection_and_merge(dfs):
     return merged_frame
 
 def oneHotEncoding(dfs):
-    columns_one_hot = ['INSTNM', 'STABBR']
+    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'SCHTYPE']
     for year in dfs:
         df = dfs[year]
         for c in columns_one_hot:
