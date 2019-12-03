@@ -1505,7 +1505,7 @@ admissions_to_drop = [
 'ACTENMID',
 'ACTMTMID',
 'ACTWRMID',
-'SAT_AVG_ALL',
+'SAT_AVG_ALL'
 ]
 
 
