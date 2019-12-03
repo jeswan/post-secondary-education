@@ -1896,6 +1896,28 @@ def convertMixedDataTypes(merged_df):
             merged_df[col] = merged_df[col].astype(str)
     return merged_df
 
+
+def combine_avg_net_price(merged_df):
+    brackets = ['NPT41_',
+                'NPT42_', 
+                'NPT43_', 
+                'NPT44_', 
+                'NPT45_',
+                'NPT4_048_', 
+                'NPT4_3075_', 
+                'NPT4_75UP_']
+
+    inst = ['PUB', 'PRIV', 'OTHER']
+    
+    for brack in brackets:
+        merged_df[brack] = merged_df[brack +inst[0]].fillna(0) \
+            + merged_df[brack+inst[1]].fillna(0) + merged_df[brack+inst[2]].fillna(0)
+        merged_df = merged_df.drop(brack+inst[0], axis=1)
+        merged_df = merged_df.drop(brack+inst[1], axis=1)
+        merged_df = merged_df.drop(brack+inst[2], axis=1)
+    
+    return merged_df
+
 # Because we have varying numbers of rows, we want to get the intersection of all the rows that exist in every year
 
 def intersection_and_merge(dfs):
@@ -1943,6 +1965,7 @@ def runAll():
     oneHotEncoding(dfs)
     merged_df = intersection_and_merge(dfs)
     merged_df = convertMixedDataTypes(merged_df)
+    merged_df = combine_avg_net_price(merged_df)
     merged_df = merged_df.fillna(merged_df.mean())
     return merged_df
     
