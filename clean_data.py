@@ -1815,7 +1815,14 @@ school_to_drop = [
 
 
 
-student_to_drop = [
+student_to_drop = [ 
+'UG_AIANOLD', # removing all UG_ featurs since we are not using 2000 - 2001
+'UG_API',
+'UG_BLACKNH',
+'UG_HISPOLD',
+'UG_NRA',
+'UG_UNKN',
+'UG_WHITENH'
 'PPTUG_EF',
 'PPTUG_EF2',
 'PFTFTUG1_EF',
@@ -1869,6 +1876,25 @@ student_to_drop = [
 ]
 
 
+dont_avg = [
+    'AANAPII',
+    'PBI',
+    'ANNHI',
+    'TRIBAL',
+    'HBCU',
+    'HSI',
+    'NANTI',
+    'OPENADMP',
+    'OPENFLAG',
+    'ICLEVEL',
+    'MENONLY',
+    'WOMENONLY',
+    'HIGHDEG',
+    'DISTANCEONLY',
+    'RELAFIL',
+    'CURROPER'
+]
+
 
 def getDataFramesFromFiles(path='../CollegeScorecard_Raw_Data/'):
     """Creates array of dataframes indexed on year of CollegeScorecard Data
@@ -1883,7 +1909,7 @@ def getDataFramesFromFiles(path='../CollegeScorecard_Raw_Data/'):
 
     for year in range(START_YEAR, END_YEAR):
         year_YY = year % 100
-        dfs[year] = pd.read_csv(path + 'MERGED' + str(year) + '_{:02d}_PP.CSV'.format((year_YY + 1) % 100), delimiter=',')
+        dfs[year] = pd.read_csv(path + 'MERGED' + str(year) + '_{:02d}_PP.CSV'.format((year_YY + 1) % 100), delimiter=',', low_memory = False)
     return dfs
 
 
@@ -1976,24 +2002,6 @@ def oneHotEncoding(merged_df):
         merged_df = pd.concat([merged_df, pd.get_dummies(merged_df[c], prefix=c)],axis=1)
         return merged_df.drop([c],axis=1, inplace=True)
             
-def runAll():
-    dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
-    addYearAsLabel(dfs)
-    dropUselessColumn(dfs)
-    convertUnknownsToNans(dfs)
-    dropColsAllNans(dfs)
-    oneHotEncoding(dfs)
-    merged_df = intersection_and_merge(dfs)
-    merged_df = convertMixedDataTypes(merged_df)
-    merged_df = combine_avg_net_price(merged_df)
-    merged_df = bin_degree(merged_df)
-    merged_df = merged_df.fillna(merged_df.mean())
-    return merged_df
-    
-    
-    
-    
-    
     
 def bin_degree(df):
 
@@ -2089,4 +2097,37 @@ def bin_degree(df):
         
     output = pd.concat([df.drop(ls_of_col, axis = 1), d], axis = 1)
     
-    return output
+    return output            
+            
+def fill_col(df):
+    for col in df.columns.tolist():
+        if col not in dont_avg:
+            df[col].fillna(df[col].mean(), inplace = True)
+        else:
+            df[col].fillna(0, inplace = True)
+
+    return df
+       
+    
+ 
+    
+    
+def runAll():
+    dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
+    addYearAsLabel(dfs)
+    dropUselessColumn(dfs)
+    convertUnknownsToNans(dfs)
+    dropColsAllNans(dfs)
+    merged_df = intersection_and_merge(dfs)
+    merged_df = convertMixedDataTypes(merged_df)
+    merged_df = combine_avg_net_price(merged_df)
+    merged_df = bin_degree(merged_df)
+    merged_df = fill_col(merged_df)
+    merged_df = oneHotEncoding(merged_df)
+    
+    return merged_df
+    
+    
+    
+    
+    
