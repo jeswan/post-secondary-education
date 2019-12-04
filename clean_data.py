@@ -1885,7 +1885,7 @@ dont_avg = [
     'HSI',
     'NANTI',
     'OPENADMP',
-    'OPENFLAG',
+    'OPEFLAG',
     'ICLEVEL',
     'MENONLY',
     'WOMENONLY',
@@ -1893,7 +1893,10 @@ dont_avg = [
     'DISTANCEONLY',
     'RELAFIL',
     'CURROPER',
-    'STABBR'
+    'STABBR',
+    'SCH_DEG',
+    'CONTROL',
+    'PREDDEG',
 ]
 
 
