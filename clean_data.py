@@ -1809,6 +1809,7 @@ school_to_drop = [
 'ALIAS',
 'ACCREDCODE',
 'T4APPROVALDATE',
+'SCH_DEG', #duplicate of PREDDEG
 'SCHTYPE' #covered by CONTROL
 ]
 
@@ -1822,7 +1823,10 @@ student_to_drop = [
 'UG_HISPOLD',
 'UG_NRA',
 'UG_UNKN',
-'UG_WHITENH'
+'UG_WHITENH',
+'PAR_ED_PCT_1STGEN', #Duplicate of FIRST_GEN
+'FAMINC_IND', #duplicate of IND_INC_AVG
+'FAMINC', #0.98 correlation with MD_FAMINC
 'PPTUG_EF',
 'PPTUG_EF2',
 'PFTFTUG1_EF',
@@ -1998,7 +2002,7 @@ def intersection_and_merge(dfs):
     return merged_frame
 
 def oneHotEncoding(merged_df):
-    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'HIGHDEG', 'ICLEVEL', 'OPENADMP', 'OPEFLAG', 'SCH_DEG']
+    columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'HIGHDEG', 'ICLEVEL', 'OPENADMP', 'OPEFLAG']
     for c in columns_one_hot:
         merged_df = pd.concat([merged_df, pd.get_dummies(merged_df[c], prefix=c)],axis=1)
         merged_df = merged_df.drop([c],axis=1)
