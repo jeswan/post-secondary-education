@@ -21,7 +21,7 @@ def fRegression(x, y, n_features_to_select):
     return postSelectKBest(x, y, selector)
 
 def mutualInfoRegression(x, y, n_features_to_select):
-    selector = SelectKBest(mutual_info_regression, k)
+    selector = SelectKBest(mutual_info_regression, n_features_to_select)
     return postSelectKBest(x, y, selector)
 
 def postSelectKBest(x, y, selector):
