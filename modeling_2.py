@@ -15,8 +15,6 @@ RF = 1
 GB = 2
 
 
-
-
 '''
 Divide the data into training and testing sets
 It is key that the testing set contains the latter years, as we are goint to predict
@@ -25,12 +23,9 @@ input: dataframe
 ouput: train and test dataframes
 '''
 def sampling_data(data):
-    data_exists = [2003, 2005, 2007, 2009, 2011, 2012]
-    
-    relevant_years_df = data[data['Year'].isin(data_exists)]
-    train = relevant_years_df.reset_index(drop=True)
+    train = data.reset_index(drop=True)
 
-    test = data[data['Year'] == 2013]
+    test = data[data['Year'] == 2014]
     test = test.reset_index(drop=True)
     
     return train, test
