@@ -16,7 +16,7 @@ def selectFeatures(merged_df_no_id, target, n_features_to_select, sel):
         feature_cols = mutualInfoRegression(x, y, n_features_to_select)
         
     # Create new dataframe with only desired columns
-    return merged_df_no_id.iloc[:,cols]
+    return merged_df_no_id.iloc[:,feature_cols]
     
 def fRegression(x, y, n_features_to_select):
     selector = SelectKBest(f_regression, n_features_to_select)
