@@ -2116,6 +2116,41 @@ def fill_col(df):
 
     return df
 
+
+def scale_data(df):
+    
+    zero_df = [
+    'C150_4_POOLED_SUPP',
+    'C150_L4_POOLED_SUPP',
+    'CCBASIC',
+    'CCSIZSET',
+    'CCUGPROF',
+    'RELAFFIL',
+    'UG'
+    
+    ]
+    
+    ls_no_scale = [col for col in df if np.isin(df[col].unique(), [0, 1]).all()]
+    
+    ls_no_scale.append('Year')
+    ls_no_scale.append('MD_EARN_WNE_P6')
+    df_scale = df.drop(ls_no_scale, axis=1)
+    df_no_scale = df[ls_no_scale]
+    
+    df_scale.reset_index(inplace = True, drop = True)
+    df_no_scale.reset_index(inplace = True, drop = True)
+
+    scale = StandardScaler()
+    scaled_arr = scale.fit_transform(df_scale)
+    scaled_df = pd.DataFrame(scaled_arr, columns = df_scale.columns)
+    
+    complete_df = pd.concat([scaled_df, df_bin], axis = 1, sort = True)
+    
+    complete_df.drop(zero_df, axis=1, inplace=True)
+    
+    return complete_df
+
+
 def dropYears(merged_df):
     years_to_remove = [1996, 1997, 1998, 1999, 2000, 2001, 2002, 2004, 2006, 2008, 2010, 2015, 2016, 2017]
     for year in years_to_remove:

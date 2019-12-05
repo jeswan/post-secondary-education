@@ -101,7 +101,7 @@ Input: x_train, y_train, x_test, the appropriate datasets which are retrieved fr
         sel, a selector which will decide which model will be run
 output: an instance of the chosen models modeling.create function
 '''
-def run_model(x_train, y_train, x_test, est = None, sel):
+def run_model(x_train, y_train, x_test, est, sel):
     if sel == RF:
         return create_random_forest(x_train, y_train, x_test, est)
     elif sel == GB:
