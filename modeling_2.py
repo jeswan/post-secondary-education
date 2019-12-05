@@ -9,6 +9,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from scipy.interpolate import InterpolatedUnivariateSpline
+import shap
 
 RF = 1
 GB = 2
@@ -133,4 +135,33 @@ def graph_feature_importance(feature_mi, x_train):
     
 
     
+    set_ids = set(merged_df['UNITID'])
+    y_pred = pd.DataFrame(set_ids, columns=['UNITID'])
+    y_pred[target] = np.nan
     
+    merged_df = merged_df[merged_df['Year'].isin(TRAINING_YEARS)]
+    
+    for unit_id in set_ids:
+        entry = merged_df.loc[merged_df['UNITID'] == unit_id].sort_values(by=['Year'])
+        x = entry['Year']
+        y = entry['MD_EARN_WNE_P6']
+        #print(entry[['MD_EARN_WNE_P6', 'Year']])
+        
+        spl = InterpolatedUnivariateSpline(x, y)
+
+        spl_val = spl(TEST_YEAR)
+        y_pred.loc[y_pred["UNITID"] == unit_id, "MD_EARN_WNE_P6"] = spl_val
+    return y_pred
+
+'''
+Input: takes fitted tree model and dataset that it was trained on
+
+Output: Shap summary of the features that most affect the SHAP value, that is, 
+the impact on model output.
+'''
+def shap_summary_plot_for_Trees(fitted_tree, x_train):
+    explainer = shap.TreeExplainer(fitted_tree)
+    shap_values = explainer.shap_values(x_train, approximate=True)
+    shap.summary_plot(shap_values, x_train)
+    
+
