@@ -6,7 +6,7 @@
 
 import pandas as pd
 import numpy as np
-
+from sklearn.preprocessing import StandardScaler
 
 # The below lists represent columns to drop based on the description of the fields in CollegeScorecardDictionary.xlsx
 
@@ -2134,6 +2134,7 @@ def scale_data(df):
     
     ls_no_scale.append('Year')
     ls_no_scale.append('MD_EARN_WNE_P6')
+    ls_no_scale.append('UNITID')
     df_scale = df.drop(ls_no_scale, axis=1)
     df_no_scale = df[ls_no_scale]
     
@@ -2144,8 +2145,9 @@ def scale_data(df):
     scaled_arr = scale.fit_transform(df_scale)
     scaled_df = pd.DataFrame(scaled_arr, columns = df_scale.columns)
     
-    complete_df = pd.concat([scaled_df, df_bin], axis = 1, sort = True)
+    complete_df = pd.concat([scaled_df, df_no_scale], axis = 1, sort = True)
     
+    # drop columns with zero standard deviation
     complete_df.drop(zero_df, axis=1, inplace=True)
     
     return complete_df
@@ -2170,6 +2172,7 @@ def runAll():
     merged_df = fill_col(merged_df)
     merged_df = oneHotEncoding(merged_df)
     merged_df = dropYears(merged_df)
+    merged_df = scale_data(merged_df)
 
     return merged_df
     

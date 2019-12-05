@@ -88,9 +88,10 @@ def create_gradient_boost(x_train, y_train, x_test, est):
     
 
     
+# estimator for svm is the C value 
     
-def create_svm_regreession(x_train, y_train, x_test):
-    svm = SVR(kernel='rbf')
+def create_svm_regreession(x_train, y_train, x_test, est):
+    svm = SVR(c = est, kernel='rbf', gamma = 'auto')
     svm.fit(x_train,y_train)
     preds = svm.predict(x_test)
     
