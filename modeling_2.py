@@ -86,7 +86,6 @@ def create_gradient_boost(x_train, y_train, x_test, est):
     
     return gbc_feature_importance, gcb, preds
     
-
     
 # estimator for svm is the C value 
     
@@ -134,7 +133,10 @@ def graph_feature_importance(feature_mi, x_train):
     feat_importances[::-1][:20].plot(kind="bar")
     plt.show()
     
-
+    
+def spline_extrapolate_missing_years(merged_df, target):
+    TRAINING_YEARS = [2003, 2005, 2007, 2009, 2011, 2012, 2013]
+    TEST_YEAR = 2014
     
     set_ids = set(merged_df['UNITID'])
     y_pred = pd.DataFrame(set_ids, columns=['UNITID'])
@@ -164,5 +166,5 @@ def shap_summary_plot_for_Trees(fitted_tree, x_train):
     explainer = shap.TreeExplainer(fitted_tree)
     shap_values = explainer.shap_values(x_train, approximate=True)
     shap.summary_plot(shap_values, x_train)
+     
     
-
