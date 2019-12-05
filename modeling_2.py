@@ -8,9 +8,11 @@ import import_ipynb
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 RF = 1
 GB = 2
+SV = 3
 
 
 '''
@@ -82,8 +84,15 @@ def create_gradient_boost(x_train, y_train, x_test, est):
     
     return gbc_feature_importance, gcb, preds
     
+
     
     
+def create_svm_regreession(x_train, y_train, x_test):
+    svm = SVR(kernel='rbf')
+    svm.fit(x_train,y_train)
+    preds = svm.predict(x_test)
+    
+    return svm, preds    
     
     
 '''
@@ -92,11 +101,13 @@ Input: x_train, y_train, x_test, the appropriate datasets which are retrieved fr
         sel, a selector which will decide which model will be run
 output: an instance of the chosen models modeling.create function
 '''
-def run_model(x_train, y_train, x_test, est, sel):
+def run_model(x_train, y_train, x_test, est = None, sel):
     if sel == RF:
         return create_random_forest(x_train, y_train, x_test, est)
     elif sel == GB:
         return create_gradient_boost(x_train, y_train, x_test, est)
+    elif sel == SV:
+        return create_svm_regreession(x_train, y_train, x_test)
         
     
     
@@ -120,7 +131,6 @@ def graph_feature_importance(feature_mi, x_train):
     feat_importances[::-1][:20].plot(kind="bar")
     plt.show()
     
-    
-    
+
     
     
