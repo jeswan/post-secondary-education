@@ -16,14 +16,16 @@ def selectFeatures(merged_df_no_id, target, n_features_to_select, sel):
     elif sel == MUTUAL_REGRESSION:
         feature_cols = mutualInfoRegression(x, y, n_features_to_select)
     
-    # add target back
-    filtered_cols = np.append(feature_cols, [target])
+
     # Create new dataframe with only desired columns
-    new_df = merged_df_no_id.iloc[:,feature_cols].merge(merged_df_no_id[target])
+    new_df = merged_df_no_id.iloc[:,feature_cols]
     
+    # add target back
+    new_df.loc(target) = merged_df_no_id[target]
+    
+    # add Year back if not present
     if 'Year' not in new_df.columns:
-        year_df = merged_df_no_id['Year']
-        new_df.join(year_df)
+        new_df.loc('Year') = merged_df_no_id['Year']
         
     return new_df
     
