@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_regression
 from sklearn.feature_selection import mutual_info_regression
+from sklearn.feature_selection import RFE 
 
 F_REGRESSION = 0
 MUTUAL_REGRESSION = 1

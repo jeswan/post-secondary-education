@@ -8,11 +8,13 @@ import import_ipynb
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from scipy.interpolate import InterpolatedUnivariateSpline
 import shap
 
 RF = 1
 GB = 2
+SV = 3
 
 
 '''
@@ -86,6 +88,12 @@ def create_gradient_boost(x_train, y_train, x_test, est):
     
     
     
+def create_svm_regreession(x_train, y_train, x_test):
+    svm = SVR(kernel='rbf')
+    svm.fit(x_train,y_train)
+    preds = svm.predict(x_test)
+    
+    return svm, preds    
     
     
 '''
@@ -99,6 +107,8 @@ def run_model(x_train, y_train, x_test, est, sel):
         return create_random_forest(x_train, y_train, x_test, est)
     elif sel == GB:
         return create_gradient_boost(x_train, y_train, x_test, est)
+    elif sel == SV:
+        return create_svm_regreession(x_train, y_train, x_test)
         
     
     
@@ -144,7 +154,6 @@ def spline_extrapolate_missing_years(merged_df, target):
         spl_val = spl(TEST_YEAR)
         y_pred.loc[y_pred["UNITID"] == unit_id, "MD_EARN_WNE_P6"] = spl_val
     return y_pred
-    
 
 '''
 Input: takes fitted tree model and dataset that it was trained on
