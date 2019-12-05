@@ -149,11 +149,11 @@ def spline_extrapolate_missing_years(merged_df, target):
         y = entry['MD_EARN_WNE_P6']
         #print(entry[['MD_EARN_WNE_P6', 'Year']])
         
-        spl = InterpolatedUnivariateSpline(x, y)
+        spl = InterpolatedUnivariateSpline(x, y, check_finite=True, k=1)
 
         spl_val = spl(TEST_YEAR)
         y_pred.loc[y_pred["UNITID"] == unit_id, "MD_EARN_WNE_P6"] = spl_val
-    return y_pred
+    return y_pred.sort_values(by=['UNITID'])
 
 '''
 Input: takes fitted tree model and dataset that it was trained on
