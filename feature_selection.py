@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_regression
 from sklearn.feature_selection import mutual_info_regression
@@ -15,9 +16,17 @@ def selectFeatures(merged_df_no_id, target, n_features_to_select, sel):
         feature_cols =  fRegression(x, y, n_features_to_select)
     elif sel == MUTUAL_REGRESSION:
         feature_cols = mutualInfoRegression(x, y, n_features_to_select)
-        
+    
+    # add target back
+    filtered_cols = np.append(feature_cols, [target])
     # Create new dataframe with only desired columns
-    return merged_df_no_id.iloc[:,cols]
+    new_df = merged_df_no_id.iloc[:,feature_cols].merge(merged_df_no_id[target])
+    
+    if 'Year' not in new_df.columns:
+        year_df = merged_df_no_id['Year']
+        new_df.join(year_df)
+        
+    return new_df
     
 def fRegression(x, y, n_features_to_select):
     selector = SelectKBest(f_regression, n_features_to_select)
