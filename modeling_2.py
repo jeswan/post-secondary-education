@@ -10,16 +10,21 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from scipy.interpolate import InterpolatedUnivariateSpline
+from sklearn.svm import SVR
 import shap
-from sklearn.linear_model import LassoCV
-from sklearn import linear_model
-from sklearn import mean_squared_error
+
+from sklearn.model_selection import KFold
+from sklearn.svm import SVR
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
 
 RF = 1
 GB = 2
 SV = 3
 LASSO_R = 4
 LINEAR_R = 5
+MSE = 0
+MAE = 1
 
 
 '''
@@ -95,7 +100,7 @@ def create_gradient_boost(x_train, y_train, x_test, est):
 # estimator for svm is the C value 
     
 def create_svm_regreession(x_train, y_train, x_test, est):
-    svm = SVR(c = est, kernel='rbf', gamma = 'auto')
+    svm = SVR(C = est, kernel='rbf', gamma = 'auto')
     svm.fit(x_train,y_train)
     preds = svm.predict(x_test)
     
@@ -138,7 +143,38 @@ def run_model(x_train, y_train, x_test, est, sel):
         return create_lasso_regression(x_train, y_train, x_test)
     elif sel == LINEAR_R:
         return create_linear_regression(x_train, y_train, x_test)
+           
     
+def xValSVR(dataset, target, k, cs, error_metric):
+    
+    kfold = KFold(n_splits = k)
+    count = 0
+    
+    err_dict = {}
+    for c in cs:
+        err_dict[c] = []
+    
+    X = dataset.drop(target, axis=1)
+    Y = dataset[target]
+    
+    for train_index, val_index in kfold.split(X):
+        X_train, X_val = X.iloc[train_index], X.iloc[val_index]
+        Y_train, Y_val = Y.iloc[train_index], Y.iloc[val_index]
+        
+        count += 1
+        for c in cs:
+            model = SVR(C=c, kernel = 'rbf', gamma='auto')
+            model.fit(X_train, Y_train)
+            preds = model.predict(X_val)
+            if error_metric == MSE:
+                err_c_k = mean_squared_error(Y_val, preds)
+            if error_metric == MAE:
+                err_c_k = mean_absolute_error
+            err_dict[c].append(err_c_k)
+            print('c = ', c, 'predicted on the ', count, 'th fold!!')
+            
+
+    return err_dict        
     
     
     
