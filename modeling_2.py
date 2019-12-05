@@ -123,6 +123,9 @@ def graph_feature_importance(feature_mi, x_train):
     plt.show()
     
     
+def spline_extrapolate_missing_years(merged_df, target):
+    TRAINING_YEARS = [2003, 2005, 2007, 2009, 2011, 2012, 2013]
+    TEST_YEAR = 2014
     
     set_ids = set(merged_df['UNITID'])
     y_pred = pd.DataFrame(set_ids, columns=['UNITID'])
@@ -141,6 +144,7 @@ def graph_feature_importance(feature_mi, x_train):
         spl_val = spl(TEST_YEAR)
         y_pred.loc[y_pred["UNITID"] == unit_id, "MD_EARN_WNE_P6"] = spl_val
     return y_pred
+    
 
 '''
 Input: takes fitted tree model and dataset that it was trained on
