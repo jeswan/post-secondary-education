@@ -2160,7 +2160,7 @@ def dropYears(merged_df):
     return merged_df
 
 def dropRowsWithoutEarningsData(merged_df):
-    return merged_df.MD_EARN_WNE_P6.notnull()
+    return merged_df[~merged_df.MD_EARN_WNE_P6.isnull()]
     
 def runAll():
     dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
@@ -2169,7 +2169,7 @@ def runAll():
     convertUnknownsToNans(dfs)
     dropColsAllNans(dfs)
     merged_df = intersection_and_merge(dfs)
-    #merged_df = dropRowsWithoutEarningsData(merged_df)
+    merged_df = dropRowsWithoutEarningsData(merged_df)
     merged_df = convertMixedDataTypes(merged_df)
     merged_df = combine_avg_net_price(merged_df)
     merged_df = bin_degree(merged_df)
