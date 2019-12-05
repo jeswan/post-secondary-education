@@ -11,10 +11,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from scipy.interpolate import InterpolatedUnivariateSpline
 import shap
+from sklearn.linear_model import LassoCV
+from sklearn import linear_model
+from sklearn import mean_squared_error
 
 RF = 1
 GB = 2
 SV = 3
+LASSO_R = 4
+LINEAR_R = 5
 
 
 '''
@@ -95,7 +100,26 @@ def create_svm_regreession(x_train, y_train, x_test, est):
     preds = svm.predict(x_test)
     
     return svm, preds    
+
+def create_lasso_regression(x_train, y_train, x_test):
+    alphas = np.logspace(-4, -0.5, 30)
+    clf = LassoCV(alphas=alphas, cv=10)
+    clf.fit(x_train, y_train)
+    preds = clf.predict(x_test)
+    return clf, preds
+
+def create_linear_regression(x_train, y_train, x_test):
+    # Create linear regression object
+    regr = linear_model.LinearRegression()
+
+    # Train the model using the training sets
+    regr.fit(x_train, y_train)
+
+    # Make predictions using the testing set
+    preds = regr.predict(x_test)
     
+    return regr, preds
+
     
 '''
 Input: x_train, y_train, x_test, the appropriate datasets which are retrieved from split_data
@@ -110,8 +134,10 @@ def run_model(x_train, y_train, x_test, est, sel):
         return create_gradient_boost(x_train, y_train, x_test, est)
     elif sel == SV:
         return create_svm_regreession(x_train, y_train, x_test)
-        
-    
+    elif sel == LASSO_R:
+        return create_lasso_regression(x_train, y_train, x_test)
+    elif sel == LINEAR_R:
+        return create_linear_regression(x_train, y_train, x_test)
     
     
     
