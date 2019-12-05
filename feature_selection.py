@@ -21,11 +21,11 @@ def selectFeatures(merged_df_no_id, target, n_features_to_select, sel):
     new_df = merged_df_no_id.iloc[:,feature_cols]
     
     # add target back
-    new_df.loc(target) = merged_df_no_id[target]
+    new_df[target] = merged_df_no_id.loc[target]
     
     # add Year back if not present
     if 'Year' not in new_df.columns:
-        new_df.loc('Year') = merged_df_no_id['Year']
+        new_df['Year'] = merged_df_no_id.loc['Year']
         
     return new_df
     

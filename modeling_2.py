@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
 from scipy.interpolate import InterpolatedUnivariateSpline
+import shap
 
 RF = 1
 GB = 2
@@ -121,34 +122,7 @@ def graph_feature_importance(feature_mi, x_train):
     feat_importances[::-1][:20].plot(kind="bar")
     plt.show()
     
-
-
-# def spline_interpolate_missing_years:
-#     missing_years = [2004, 2006, 2008, 2010]
-
-#     set_ids = set(df_year_earnings['UNITID'])
-#     for unit_id in set_ids:
-#         entry = merged_df_no_id.loc[merged_df_no_id['UNITID'] == unit_id].sort_values(by=['Year'])
-
-#         x = entry['Year']
-#         y = entry['MD_EARN_WNE_P6']
-#         try:
-#             spl = InterpolatedUnivariateSpline(x, y)
-#         except ValueError:
-#             data = [unit_id, year, float(interp_earn)]
-#             new_earn_df = pd.DataFrame([{'UNITID': data[0], 'Year': data[1], 'MD_EARN_WNE_P6': np.NaN}]) 
-#             df_year_earnings = df_year_earnings.append(new_earn_df)
-#             continue
     
-#     for year in missing_years:
-#         interp_earn = spl(year)
-#         data = [unit_id, year, float(interp_earn)]
-#         new_earn_df = pd.DataFrame([{'UNITID': data[0], 'Year': data[1], 'MD_EARN_WNE_P6': data[2]}]) 
-#         df_year_earnings = df_year_earnings.append(new_earn_df)
-
-def spline_extrapolate_missing_years(merged_df, target):
-    TRAINING_YEARS = [2003, 2005, 2007, 2009, 2011, 2012, 2013]
-    TEST_YEAR = 2014
     
     set_ids = set(merged_df['UNITID'])
     y_pred = pd.DataFrame(set_ids, columns=['UNITID'])
@@ -167,5 +141,16 @@ def spline_extrapolate_missing_years(merged_df, target):
         spl_val = spl(TEST_YEAR)
         y_pred.loc[y_pred["UNITID"] == unit_id, "MD_EARN_WNE_P6"] = spl_val
     return y_pred
-    
+
+'''
+Input: takes fitted tree model and dataset that it was trained on
+
+Output: Shap summary of the features that most affect the SHAP value, that is, 
+the impact on model output.
+'''
+def shap_summary_plot_for_Trees(fitted_tree, x_train):
+    explainer = shap.TreeExplainer(fitted_tree)
+    shap_values = explainer.shap_values(x_train, approximate=True)
+    shap.summary_plot(shap_values, x_train)
+     
     
