@@ -10,6 +10,7 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from scipy.interpolate import InterpolatedUnivariateSpline
+from sklearn.svm import SVR
 import shap
 
 from sklearn.model_selection import KFold
@@ -99,7 +100,7 @@ def create_gradient_boost(x_train, y_train, x_test, est):
 # estimator for svm is the C value 
     
 def create_svm_regreession(x_train, y_train, x_test, est):
-    svm = SVR(c = est, kernel='rbf', gamma = 'auto')
+    svm = SVR(C = est, kernel='rbf', gamma = 'auto')
     svm.fit(x_train,y_train)
     preds = svm.predict(x_test)
     
@@ -118,7 +119,7 @@ def run_model(x_train, y_train, x_test, est, sel):
     elif sel == GB:
         return create_gradient_boost(x_train, y_train, x_test, est)
     elif sel == SV:
-        return create_svm_regreession(x_train, y_train, x_test)
+        return create_svm_regreession(x_train, y_train, x_test, est)
         
     
     
