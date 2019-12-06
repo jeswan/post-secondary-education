@@ -35,9 +35,9 @@ input: dataframe
 ouput: train and test dataframes
 '''
 def sampling_data(data):
-    train = data.reset_index(drop=True)
+    train = data[(data.Year != 2014) | (data.Year != 2013)].reset_index(drop=True)
 
-    test = data[data['Year'] == 2014]
+    test = data[(data.Year != 2014) | (data.Year != 2013)]
     test = test.reset_index(drop=True)
     
     return train, test
@@ -198,7 +198,7 @@ def graph_feature_importance(feature_mi, x_train):
     
 def spline_extrapolate_missing_years(merged_df, target):
     TRAINING_YEARS = [2003, 2005, 2007, 2009, 2011, 2012, 2013]
-    TEST_YEAR = 2014
+    TEST_YEAR = [2013, 2014]
     
     set_ids = set(merged_df['UNITID'])
     y_pred = pd.DataFrame(set_ids, columns=['UNITID'])
@@ -213,9 +213,10 @@ def spline_extrapolate_missing_years(merged_df, target):
         #print(entry[['MD_EARN_WNE_P6', 'Year']])
         
         spl = InterpolatedUnivariateSpline(x, y, check_finite=True, k=1)
-
-        spl_val = spl(TEST_YEAR)
-        y_pred.loc[y_pred["UNITID"] == unit_id, "MD_EARN_WNE_P6"] = spl_val
+        #NOT IMPLEMENTED FOR TWO TEST YEARS
+        for year in TEST_YEAR:
+            spl_val = spl(TEST_YEAR)
+            y_pred.loc[y_pred["UNITID"] == unit_id, "MD_EARN_WNE_P6"] = spl_val
     return y_pred.sort_values(by=['UNITID'])
 
 '''
