@@ -2012,6 +2012,8 @@ def oneHotEncoding(merged_df):
     return merged_df
     
 def bin_degree(df):
+    
+    df = df.reset_index(drop=True)
 
     DEG_SCIMATH = ['PCIP26', 
                  'PCIP27', 
@@ -2102,8 +2104,10 @@ def bin_degree(df):
             d["DEG_MIL"] += df_pcip[i]
         else:
             d["DEG_BUS"] += df_pcip[i]
-        
-    output = pd.concat([df.drop(ls_of_col, axis = 1), d], axis = 1)
+    
+    df = df.drop(ls_of_col, axis = 1)
+    
+    output = pd.concat([df, d], axis = 1, sort = True)
     
     return output            
             
@@ -2119,36 +2123,38 @@ def fill_col(df):
 
 def scale_data(df):
     
-    zero_df = [
-    'C150_4_POOLED_SUPP',
-    'C150_L4_POOLED_SUPP',
-    'CCBASIC',
-    'CCSIZSET',
-    'CCUGPROF',
-    'RELAFFIL',
-    'UG'
-    
-    ]
-    
+    # all binary columns from data frame 
     ls_no_scale = [col for col in df if np.isin(df[col].unique(), [0, 1]).all()]
+    
+
+    zero_df = [
+        'C150_4_POOLED_SUPP',
+        'C150_L4_POOLED_SUPP',
+        'CCBASIC',
+        'CCSIZSET',
+        'CCUGPROF',
+        'RELAFFIL',
+        'UG'
+    ]
     
     ls_no_scale.append('Year')
     ls_no_scale.append('MD_EARN_WNE_P6')
     ls_no_scale.append('UNITID')
+    
+    
     df_scale = df.drop(ls_no_scale, axis=1)
+    df_scale = df_scale.drop(zero_df, axis=1)
     df_no_scale = df[ls_no_scale]
     
-    df_scale.reset_index(inplace = True, drop = True)
-    df_no_scale.reset_index(inplace = True, drop = True)
+    df_scale = df_scale.reset_index(drop = True)
+    df_no_scale = df_no_scale.reset_index(drop = True)
 
     scale = StandardScaler()
     scaled_arr = scale.fit_transform(df_scale)
     scaled_df = pd.DataFrame(scaled_arr, columns = df_scale.columns)
     
-    complete_df = pd.concat([scaled_df, df_no_scale], axis = 1, sort = True)
-    
-    # drop columns with zero standard deviation
-    complete_df.drop(zero_df, axis=1, inplace=True)
+    complete_df = pd.concat([scaled_df, df_no_scale], axis = 1, sort =True)
+
     
     return complete_df
 
@@ -2177,9 +2183,9 @@ def runAll():
     merged_df = oneHotEncoding(merged_df)
     merged_df = dropYears(merged_df)
     merged_df = scale_data(merged_df)
-    merged_df.astype({'Year': 'int32'})
+    merged_df = merged_df.astype({'Year': 'int32'})
     #log the target variable
-    merged_df.loc['MD_EARN_WNE_P6'] = np.log(merged_df['MD_EARN_WNE_P6'])
+    merged_df['MD_EARN_WNE_P6'] = np.log(merged_df['MD_EARN_WNE_P6'])
 
     return merged_df
     
