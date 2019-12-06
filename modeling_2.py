@@ -71,7 +71,7 @@ Input: XY train/test, and an estimator parameter for random forest
 Output: array feature importance , trained regressor, and the prditions on the test set
 """
 def create_random_forest(x_train, y_train, x_test, est):
-    rf = RandomForestRegressor(n_estimators=est, oob_score = True)
+    rf = RandomForestRegressor(n_estimators=est)
     rf.fit(x_train, y_train)
     preds = rf.predict(x_test)
     rf_feature_importance = rf.feature_importances_
