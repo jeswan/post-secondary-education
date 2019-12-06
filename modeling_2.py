@@ -138,7 +138,7 @@ def run_model(x_train, y_train, x_test, est, sel):
     elif sel == GB:
         return create_gradient_boost(x_train, y_train, x_test, est)
     elif sel == SV:
-        return create_svm_regreession(x_train, y_train, x_test)
+        return create_svm_regreession(x_train, y_train, x_test, est)
     elif sel == LASSO_R:
         return create_lasso_regression(x_train, y_train, x_test)
     elif sel == LINEAR_R:
@@ -189,7 +189,7 @@ def xValSVR(x_train, y_train, target, k, cs, error_metric):
 
 
 
-def xValRF(dataset, target, k, est_list, error_metric):
+def xValRF(x_train, y_train, target, k, est_list, error_metric):
     kfold = KFold(n_splits = k)
 
 
@@ -198,8 +198,8 @@ def xValRF(dataset, target, k, est_list, error_metric):
     for est in est_list:
         err_dict[est] = []
     
-    X = dataset.drop(target, axis=1)
-    Y = dataset[target]
+    X = x_train#dataset.drop(target, axis=1)
+    Y = y_train#dataset[target]
 
     #the split function will divide the data into k parts, each of the k folds will be a situation 
     #in which one of the k parts will be the validation set. 
