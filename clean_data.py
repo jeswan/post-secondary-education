@@ -2177,6 +2177,9 @@ def runAll():
     merged_df = oneHotEncoding(merged_df)
     merged_df = dropYears(merged_df)
     merged_df = scale_data(merged_df)
+    merged_df.astype({'Year': 'int32'})
+    #log the target variable
+    merged_df.loc['MD_EARN_WNE_P6'] = np.log(merged_df['MD_EARN_WNE_P6'])
 
     return merged_df
     
