@@ -138,14 +138,24 @@ def run_model(x_train, y_train, x_test, est, sel):
     elif sel == GB:
         return create_gradient_boost(x_train, y_train, x_test, est)
     elif sel == SV:
-        return create_svm_regreession(x_train, y_train, x_test)
+        return create_svm_regreession(x_train, y_train, x_test, est)
     elif sel == LASSO_R:
         return create_lasso_regression(x_train, y_train, x_test)
     elif sel == LINEAR_R:
         return create_linear_regression(x_train, y_train, x_test)
            
     
-def xValSVR(dataset, target, k, cs, error_metric):
+    
+    
+    
+    
+'''
+k=5 or 10
+target as usual
+cs is a list of possibilities for c. try cs = [10**i for i in range(-8, 2)] or
+some subset as this will take a while to run, especially with 10 folds
+'''    
+def xValSVR(x_train, y_train, target, k, cs, error_metric):
     
     kfold = KFold(n_splits = k)
     count = 0
@@ -154,8 +164,8 @@ def xValSVR(dataset, target, k, cs, error_metric):
     for c in cs:
         err_dict[c] = []
     
-    X = dataset.drop(target, axis=1)
-    Y = dataset[target]
+    X = x_train#dataset.drop(target, axis=1)
+    Y = y_train#dataset[target]
     
     for train_index, val_index in kfold.split(X):
         X_train, X_val = X.iloc[train_index], X.iloc[val_index]
@@ -174,7 +184,43 @@ def xValSVR(dataset, target, k, cs, error_metric):
             print('c = ', c, 'predicted on the ', count, 'th fold!!')
             
 
-    return err_dict        
+    return err_dict       
+
+
+
+
+def xValRF(x_train, y_train, target, k, est_list, error_metric):
+    kfold = KFold(n_splits = k)
+
+
+    err_dict = {}
+    
+    for est in est_list:
+        err_dict[est] = []
+    
+    X = x_train#dataset.drop(target, axis=1)
+    Y = y_train#dataset[target]
+
+    #the split function will divide the data into k parts, each of the k folds will be a situation 
+    #in which one of the k parts will be the validation set. 
+    for train_index, val_index in kfold.split(X):
+        X_train, X_val = X.iloc[train_index], X.iloc[val_index]
+        Y_train, Y_val = Y.iloc[train_index], Y.iloc[val_index]
+        #for each c in cs, we train a model on the the training we defined in the outter loop
+        #we then predict on the validation data we have also defined
+        
+        for est in est_list:
+            model = RandomForestRegressor(n_estimators=est, oob_score = True)
+            model.fit(X_train, Y_train)
+            pred = model.predict(X_val)
+            if error_metric == MSE:
+                err_est_k = mean_squared_error(Y_val, pred)
+            if error_metric == MAE:
+                err_est_k = mean_absolute_error(Y_val, pred)
+            err_dict[est].append(err_est_k)
+
+
+    return err_dict 
     
     
     
