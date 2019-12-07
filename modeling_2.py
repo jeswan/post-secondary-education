@@ -242,6 +242,7 @@ def graph_feature_importance(feature_mi, x_train):
     plt.xlabel('feature', fontsize=12)
     plt.ylabel('importance', fontsize=12)
     feat_importances[::-1][:20].plot(kind="bar")
+    plt.savefig('feat_imp')
     plt.show()
     return(feat_importances[::-1][:20])
     
