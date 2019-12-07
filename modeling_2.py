@@ -246,9 +246,8 @@ def graph_feature_importance(feature_mi, x_train):
     return(feat_importances[::-1][:20])
     
     
-def spline_extrapolate_missing_years(merged_df, target):
+def spline_extrapolate_missing_years(merged_df, target, test_year = 2014):
     TRAINING_YEARS = [2003, 2005, 2007, 2009, 2011, 2012, 2013]
-    TEST_YEAR = [2013, 2014]
     
     set_ids = set(merged_df['UNITID'])
     y_pred = pd.DataFrame(set_ids, columns=['UNITID'])
