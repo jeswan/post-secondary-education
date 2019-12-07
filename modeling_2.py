@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from scipy.interpolate import InterpolatedUnivariateSpline
 from sklearn.svm import SVR
+from sklearn import linear_model
+from sklearn.linear_model import LassoCV
 import shap
 
 from sklearn.model_selection import KFold
@@ -191,7 +193,7 @@ def xValSVR(x_train, y_train, target, k, cs, error_metric):
 
 def xValRF(x_train, y_train, target, k, est_list, error_metric):
     kfold = KFold(n_splits = k)
-
+    count = 0
 
     err_dict = {}
     
@@ -208,9 +210,9 @@ def xValRF(x_train, y_train, target, k, est_list, error_metric):
         Y_train, Y_val = Y.iloc[train_index], Y.iloc[val_index]
         #for each c in cs, we train a model on the the training we defined in the outter loop
         #we then predict on the validation data we have also defined
-        
+        count += 1
         for est in est_list:
-            model = RandomForestRegressor(n_estimators=est, oob_score = True)
+            model = RandomForestRegressor(n_estimators=est)
             model.fit(X_train, Y_train)
             pred = model.predict(X_val)
             if error_metric == MSE:
@@ -218,6 +220,7 @@ def xValRF(x_train, y_train, target, k, est_list, error_metric):
             if error_metric == MAE:
                 err_est_k = mean_absolute_error(Y_val, pred)
             err_dict[est].append(err_est_k)
+            print('est = ', est, 'predicted on the ', count, 'th fold!!')
 
 
     return err_dict 
@@ -240,6 +243,7 @@ def graph_feature_importance(feature_mi, x_train):
     plt.ylabel('importance', fontsize=12)
     feat_importances[::-1][:20].plot(kind="bar")
     plt.show()
+    return(feat_importances[::-1][:20])
     
     
 def spline_extrapolate_missing_years(merged_df, target, test_year = 2014):
