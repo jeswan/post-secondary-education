@@ -242,7 +242,7 @@ def graph_feature_importance(feature_mi, x_train):
     plt.xlabel('feature', fontsize=12)
     plt.ylabel('importance', fontsize=12)
     feat_importances[::-1][:20].plot(kind="bar")
-    plt.savefig('feat_imp')
+    plt.savefig('shap.png', bbox_inches='tight')
     plt.show()
     return(feat_importances[::-1][:20])
     
@@ -278,6 +278,7 @@ the impact on model output.
 def shap_summary_plot_for_Trees(fitted_tree, x_train):
     explainer = shap.TreeExplainer(fitted_tree)
     shap_values = explainer.shap_values(x_train, approximate=True)
-    shap.summary_plot(shap_values, x_train)
+    shap.summary_plot(shap_values, x_train, show=False)
+    plt.savefig('shap.png', bbox_inches='tight')
      
     
