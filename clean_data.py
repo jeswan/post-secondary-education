@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[27]:
-
-
+import os
 import pandas as pd
 import numpy as np
+import urllib.request
+import zipfile
 from sklearn.preprocessing import StandardScaler
 
 # The below lists represent columns to drop based on the description of the fields in CollegeScorecardDictionary.xlsx
-
 
 academics_to_drop = [
 'CIP01CERT1',
@@ -1903,13 +1902,24 @@ dont_avg = [
     'PREDDEG',
 ]
 
+def getCollegeScorecardData():
+    file_name = 'CollegeScorecard_Raw_Data.zip'
+    url = 'https://ed-public-download.app.cloud.gov/downloads/' + file_name
+    urllib.request.urlretrieve(url, file_name)   
+    
+    with zipfile.ZipFile(file_name, 'r') as zip_ref:
+        zip_ref.extractall()
+    os.remove(file_name)
 
-def getDataFramesFromFiles(path='../CollegeScorecard_Raw_Data/'):
+def getDataFramesFromFiles(path='./CollegeScorecard_Raw_Data/'):
     """Creates array of dataframes indexed on year of CollegeScorecard Data
 
     :param path: Path to unzipped directory of CollegeScorecard data
 
     :return: an array of data frames indexed by year"""
+    
+    if os.path.isdir(path) is False:
+        getCollegeScorecardData()
     
     START_YEAR = 1996
     END_YEAR = 2018
@@ -1998,7 +2008,7 @@ def intersection_and_merge(dfs):
         
     merged_frame = pd.DataFrame([])
     for df in new_dfs:
-        merged_frame = merged_frame.append(new_dfs[df])
+        merged_frame = merged_frame.append(new_dfs[df], sort = True)
     
     merged_frame = merged_frame.reset_index(drop=True)
     
@@ -2007,7 +2017,7 @@ def intersection_and_merge(dfs):
 def oneHotEncoding(merged_df):
     columns_one_hot = ['STABBR', 'PREDDEG', 'CONTROL', 'HIGHDEG', 'ICLEVEL', 'OPENADMP', 'OPEFLAG']
     for c in columns_one_hot:
-        merged_df = pd.concat([merged_df, pd.get_dummies(merged_df[c], prefix=c)],axis=1)
+        merged_df = pd.concat([merged_df, pd.get_dummies(merged_df[c], prefix=c)],axis=1, sort=True)
         merged_df = merged_df.drop([c],axis=1)
     return merged_df
     
@@ -2169,7 +2179,7 @@ def dropRowsWithoutEarningsData(merged_df):
     return merged_df[~merged_df.MD_EARN_WNE_P6.isnull()]
     
 def runAll():
-    dfs = getDataFramesFromFiles('../CollegeScorecard_Raw_Data/')
+    dfs = getDataFramesFromFiles()
     addYearAsLabel(dfs)
     dropUselessColumn(dfs)
     convertUnknownsToNans(dfs)
